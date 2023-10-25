@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'views/decklist.dart';
+import '../views/decklist.dart'; 
+import 'utils/dbhelper.dart'; 
 
-void main() async {
-  runApp(const MaterialApp(
+void main() {
+  runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: DeckList(),
   ));
