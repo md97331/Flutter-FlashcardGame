@@ -75,7 +75,7 @@ class _DeckListState extends State<DeckList> {
         title: const Text('Deck List'),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.add), // Add button icon
+            icon: const Icon(Icons.download), // Add button icon
             onPressed: () {
               // Handle the button press to load data from JSON
               loadDataFromJson();

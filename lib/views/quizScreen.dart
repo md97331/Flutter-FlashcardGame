@@ -5,13 +5,13 @@ import '../utils/dbhelper.dart';
 class QuizScreen extends StatefulWidget {
   final Deck deck;
 
-  QuizScreen({required this.deck});
+  const QuizScreen({super.key, required this.deck});
 
   @override
-  _QuizScreenState createState() => _QuizScreenState();
+  QuizScreenState createState() => QuizScreenState();
 }
 
-class _QuizScreenState extends State<QuizScreen> {
+class QuizScreenState extends State<QuizScreen> {
   List<Fcards> shuffledFlashcards = [];
   int currentIndex = 0;
   bool showAnswer = false;
@@ -78,12 +78,8 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   void updateStats() {
-    int uniqueCards = uniqueCardSeen.length;
-    int totalCards = shuffledFlashcards.length;
     setState(() {
       // Only update the stats without changing currentIndex
-      uniqueCards = uniqueCardSeen.length;
-      totalCards = shuffledFlashcards.length;
     });
   }
 
@@ -92,9 +88,9 @@ class _QuizScreenState extends State<QuizScreen> {
     if (shuffledFlashcards.isEmpty) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Quiz Mode - No flashcards available'),
+          title: const Text('Quiz Mode - No flashcards available'),
         ),
-        body: Center(
+        body: const Center(
           child: Text('No flashcards available in this deck.'),
         ),
       );
@@ -108,70 +104,80 @@ class _QuizScreenState extends State<QuizScreen> {
       appBar: AppBar(
         title: Text(
             '${widget.deck.name} - $currentIndex of ${shuffledFlashcards.length} cards'),
-        backgroundColor: Color.fromARGB(255, 158, 153, 182),
+        backgroundColor: const Color.fromARGB(255, 158, 153, 182),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FractionallySizedBox(
-              widthFactor: 0.75,
-              child: Card(
-                color: peekedCardsList[currentIndex]
-                    ? Color.fromARGB(199, 148, 172, 200)
-                    : Color.fromARGB(255, 158, 153, 182),
-                child: Container(
-                  height: 300,
-                  alignment: Alignment.center,
-                  child: Stack(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          // Handle tapping the flashcard
-                        },
-                      ),
-                      Center(
-                        child: Text(
-                          showAnswer ? answer : question,
-                          style: TextStyle(fontSize: 24),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Row(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final cardWidth = constraints.maxWidth * 0.75;
+            final cardHeight = constraints.maxHeight*0.55; // Maximum card height
+
+           
+
+            return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                IconButton(
-                  onPressed: () => goToCard(-1),
-                  icon: Icon(Icons.arrow_left),
+                FractionallySizedBox(
+                  widthFactor: 0.75,
+                  child: Card(
+                    color: peekedCardsList[currentIndex]
+                        ? const Color.fromARGB(199, 148, 172, 200)
+                        : const Color.fromARGB(255, 158, 153, 182),
+                    child: Container(
+                      width: cardWidth,
+                      height: cardHeight,
+                      alignment: Alignment.center,
+                      child: Stack(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              // Handle tapping the flashcard
+                            },
+                          ),
+                          Center(
+                            child: Text(
+                              showAnswer ? answer : question,
+                              style: const TextStyle(fontSize: 24),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-                SizedBox(width: 20),
-                IconButton(
-                  onPressed: flipCard,
-                  icon: Icon(Icons.copy),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () => goToCard(-1),
+                      icon: const Icon(Icons.arrow_left),
+                    ),
+                    const SizedBox(width: 20),
+                    IconButton(
+                      onPressed: flipCard,
+                      icon: const Icon(Icons.copy),
+                    ),
+                    const SizedBox(width: 20),
+                    IconButton(
+                      onPressed: () => goToCard(1),
+                      icon: const Icon(Icons.arrow_right),
+                    ),
+                  ],
                 ),
-                SizedBox(width: 20),
-                IconButton(
-                  onPressed: () => goToCard(1),
-                  icon: Icon(Icons.arrow_right),
+                const SizedBox(height: 20),
+                Text(
+                  'Seen ${uniqueCardSeen.length} of ${shuffledFlashcards.length} cards',
+                  style: const TextStyle(fontSize: 10),
+                ),
+                const Padding(padding: EdgeInsets.all(8)),
+                Text(
+                  'Peeked at $peekedCards of ${uniqueCardSeen.length} answers',
+                  style: const TextStyle(fontSize: 10),
                 ),
               ],
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Seen ${uniqueCardSeen.length} of ${shuffledFlashcards.length} cards',
-              style: TextStyle(fontSize: 10),
-            ),
-            Padding(padding: const EdgeInsets.all(8)),
-            Text(
-              'Peeked at $peekedCards of ${uniqueCardSeen.length} answers',
-              style: TextStyle(fontSize: 10),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
