@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import '../views/decklist.dart'; 
-import 'utils/dbhelper.dart'; 
+import 'views/decklist1.dart';
+import '../utils/loadData.dart';
 
-void main() {
-  runApp(MaterialApp(
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await loadAndInsertJsonData();
+  runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: DeckList(),
+    home: DeckListG(),
   ));
 }
