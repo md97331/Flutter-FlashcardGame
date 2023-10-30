@@ -6,6 +6,8 @@ import '../views/addDeck.dart';
 import '../views/addFlashcard.dart';
 import '../views/editDeck.dart';
 import '../views/editFlashcard.dart';
+import '../utils/loadData.dart';
+import '../views/quizScreen.dart';
 
 class DeckListG extends StatelessWidget {
   const DeckListG({super.key});
@@ -41,6 +43,15 @@ class DeckList extends StatefulWidget {
 }
 
 class _DeckListState extends State<DeckList> {
+  bool dataLoaded = false;
+
+  Future<void> loadDataFromJson() async {
+    // Call the function to load and insert data from the JSON file
+    await loadAndInsertJsonData();
+    // You might want to refresh the UI after loading data.
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final listOfDecks = Provider.of<List<Deck>?>(context);
@@ -60,6 +71,18 @@ class _DeckListState extends State<DeckList> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Deck List'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.add), // Add button icon
+            onPressed: () {
+              // Handle the button press to load data from JSON
+              loadDataFromJson();
+            },
+          ),
+        ],
+      ),
       body: GridView.count(
         crossAxisCount: 2,
         padding: const EdgeInsets.all(4),
@@ -219,6 +242,13 @@ class _FcardsListState extends State<FcardsList> {
               });
             },
           ),
+          IconButton(
+              icon: Icon(Icons.play_arrow),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return QuizScreen(deck: widget.deck);
+                }));
+              })
         ],
       ),
       body: FutureBuilder(
@@ -295,11 +325,13 @@ class _FcardsListState extends State<FcardsList> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddFlashcardScreen(deck: widget.deck, addFlashcardCallback: (flashcard) {
-                setState(() {
-                  fcards.add(flashcard);
-                });
-              }),
+              builder: (context) => AddFlashcardScreen(
+                  deck: widget.deck,
+                  addFlashcardCallback: (flashcard) {
+                    setState(() {
+                      fcards.add(flashcard);
+                    });
+                  }),
             ),
           );
         },
@@ -308,7 +340,3 @@ class _FcardsListState extends State<FcardsList> {
     );
   }
 }
-
-
-
-
